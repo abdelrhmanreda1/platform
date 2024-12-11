@@ -6,32 +6,40 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
 import ChooseRole from "./pages/ChooseRole";
+import ProfileLayout from "./ui/ProfileLayout";
+import ProfileHome from "./pages/Dashboard";
+import Jobs from "./pages/Jobs";
+import JobDetailsPage from "./pages/JopDetails";
+import PostJob from "./pages/PostJob";
+import Profile from "./pages/Profile";
 
-const router = createBrowserRouter(
-  [
-    {
-      path: "/",
-      element: <AppLayout />,
-      children: [
-        { index: true, element: <Home /> },
-        { path: "/chooseRole", element: <ChooseRole /> },
-        { path: "/login", element: <Login /> },
-        { path: "/signup", element: <Register /> },
-        { path: "*", element: <NotFound /> },
-      ],
-    },
-  ],
+const router = createBrowserRouter([
   {
-    future: {
-      v7_skipActionErrorRevalidation: true,
-      v7_partialHydration: true,
-      v7_startTransition: true,
-      v7_relativeSplatPath: true,
-      v7_fetcherPersist: true,
-      v7_normalizeFormMethod: true,
-    },
-  }
-);
+    path: "/",
+    element: <AppLayout />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "/chooseRole", element: <ChooseRole /> },
+      { path: "/login", element: <Login /> },
+      { path: "/signup/:role", element: <Register /> },
+      { path: "*", element: <NotFound /> },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: <ProfileLayout />,
+    children: [
+      { index: true, element: <ProfileHome /> },
+      { path: "jobs", element: <Jobs /> },
+      { path: "jobs/:jobId", element: <JobDetailsPage /> },
+      {
+        path: "/dashboard/jobs/:jobId/apply",
+        element: <PostJob />,
+      },
+      { path: "yourProfile", element: <Profile /> },
+    ],
+  },
+]);
 
 function App() {
   return <RouterProvider router={router} />;

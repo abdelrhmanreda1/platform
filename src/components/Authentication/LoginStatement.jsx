@@ -2,6 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { InputField } from "../../ui/InputField";
 import { ActionButton } from "../../ui/ActionButton";
+import { useNavigate } from "react-router-dom";
 
 const FormSection = ({ title, subtitle, children }) => (
   <div className="flex flex-col justify-center items-center">
@@ -25,7 +26,7 @@ FormSection.defaultProps = {
 function LoginStatement() {
   const [step, setStep] = useState("login");
   const [verificationCode, setVerificationCode] = useState(["", "", "", ""]);
-
+  const navigate = useNavigate();
   const handleForgetPassword = () => setStep("forgetPassword");
   const handleResetPassword = () => setStep("verifyAccount");
   const handleVerify = () => setStep("resetPassword");
@@ -54,7 +55,12 @@ function LoginStatement() {
                 Forgot password?
               </button>
             </div>
-            <ActionButton onClick={() => {}} text="Login" />
+            <ActionButton
+              onClick={() => {
+                navigate("/dashboard");
+              }}
+              text="Login"
+            />
           </form>
         </FormSection>
       )}

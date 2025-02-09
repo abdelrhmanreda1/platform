@@ -90,7 +90,6 @@ function RegisterForm() {
         {formik.touched.gender && formik.errors.gender && <p className="text-red-500 text-sm mt-1">{formik.errors.gender}</p>}
       </div>
 
-      {mutation.isError && <p className="text-red-500">Error: {mutation.error.message}</p>}
       {mutation.isSuccess && <p className="text-green-500">Successfully registered! Check your inbox.</p>}
 
       <button type="submit" className="w-full bg-[#003366] text-white py-3 rounded-lg hover:bg-[#002855] transition duration-300 flex items-center justify-center">

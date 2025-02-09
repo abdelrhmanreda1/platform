@@ -60,7 +60,6 @@ function RegisterFormCompany() {
       <InputField formik={formik} name="password" type="password" placeholder="Password" />
       <InputField formik={formik} name="companyName" type="text" placeholder="companyName" />
       <InputField formik={formik} name="address" type="text" placeholder="address" />
-      {mutation.isError && <p className="text-red-500">Error: {mutation.error.message}</p>}
       {mutation.isSuccess && <p className="text-green-500">Successfully registered! Check your inbox.</p>}
       <button type="submit" className="w-full bg-[#003366] text-white py-3 rounded-lg hover:bg-[#002855] transition duration-300 flex items-center justify-center">
         {mutation.isLoading ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span> : "Sign Up"}

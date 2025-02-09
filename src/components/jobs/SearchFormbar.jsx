@@ -1,6 +1,6 @@
 import { FiFilter } from "react-icons/fi";
 
-const SearchBar = ({ onFilterClick }) => {
+const SearchFormbar = ({ onFilterClick }) => {
   return (
     <div
       className="text-white py-14 flex flex-col justify-center items-center rounded-md relative"
@@ -25,4 +25,4 @@ const SearchBar = ({ onFilterClick }) => {
   );
 };
 
-export default SearchBar;
+export default SearchFormbar;

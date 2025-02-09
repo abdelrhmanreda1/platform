@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
-import FilterPanel from "../components/jobs/FilterPanel";
+
 import JobList from "../components/jobs/JobList";
-import SearchBar from "../components/jobs/SearchBar";
+import SearchFormbar from "../components/jobs/SearchFormbar";
+import FilterPanel from "../components/jobs/FilterPanels";
 
 function Jobs() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   return (
     <div className="min-h-screen w-full bg-gray-100 relative">
-      <SearchBar onFilterClick={() => setIsFilterOpen(true)} />
+      <SearchFormbar onFilterClick={() => setIsFilterOpen(true)} />
       <div className="container mx-auto py-4">
         <div className="flex justify-center items-center mt-6 gap-4">
           {/* Filter Panel */}

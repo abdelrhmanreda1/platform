@@ -1,18 +1,25 @@
 import MainContent from "../components/dashboard/MainContent";
+import PostBox from "../components/dashboard/PostBox";
 import RecommendedJobs from "../components/dashboard/RecommendedJobs";
 import Sidebar from "../components/dashboard/Sidebar";
 
 const Dashboard = () => {
   return (
-    <div className=" min-h-screen">
-      <div className="grid grid-cols-12 gap-4 px-6 py-4 w-[90%] mx-auto mt-9">
-        <div className="col-span-3">
+    <div className="min-h-screen">
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 px-4  md:px-6 py-4 w-full md:w-[90%] md:mx-auto mt-2 md:mt-9">
+        <div className="hidden sm:block sm:col-span-3">
           <Sidebar />
         </div>
-        <div className="col-span-6">
+
+        <div className="col-span-1 sm:col-span-6">
+          <PostBox />
+          <span className="block md:hidden">
+            <RecommendedJobs />
+          </span>
           <MainContent />
         </div>
-        <div className="col-span-3">
+
+        <div className="hidden md:flex col-span-1 sm:col-span-3">
           <RecommendedJobs />
         </div>
       </div>

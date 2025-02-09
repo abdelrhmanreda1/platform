@@ -1,10 +1,9 @@
-import PostBox from "./PostBox";
+// import PostBox from "./PostBox";
 import PostItem from "./PostItem";
 
 const MainContent = () => {
   return (
     <div>
-      <PostBox />
       <PostItem />
       <PostItem />
       <PostItem />

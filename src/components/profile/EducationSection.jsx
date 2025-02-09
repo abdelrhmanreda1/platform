@@ -26,9 +26,9 @@ const EducationSection = () => {
           <li key={index} className="text-gray-700 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <p className="text-sm text-gray-500">{edu.duration}</p>
-              <p className="font-semibold text-lg">{edu.degree}</p>
+              <p className="font-semibold text-base md:text-lg">{edu.degree}</p>
             </div>
-            <span> {edu.school}</span>
+            <span className=" text-base md:text-sm"> {edu.school}</span>
           </li>
         ))}
       </ul>

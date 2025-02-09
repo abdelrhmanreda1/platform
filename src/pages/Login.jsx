@@ -22,7 +22,7 @@ function Login() {
       >
         <h2 className="text-lg pl-28 md:text-3xl font-bold mb-4">Don’t Have An Account Yet?</h2>
         <p className="mb-12 pl-28 font-light text-lg text-center">Let’s get you all set up so you can start</p>
-        <button onClick={() => navigate("/signup")} className="ml-28 border border-white text-white px-6 py-2 rounded-md hover:bg-white hover:text-[#003366] transition duration-300">
+        <button onClick={() => navigate("/chooseRole")} className="ml-28 border border-white text-white px-6 py-2 rounded-md hover:bg-white hover:text-[#003366] transition duration-300">
           Sign up
         </button>
       </div>

@@ -14,24 +14,24 @@ const ProfileCard = () => {
         </div>
 
         <div className="mt-24 text-center">
-          <h2 className="text-xl font-semibold text-gray-800 mb-3">Mustafa Mahmoud</h2>
+          <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3">Mustafa Mahmoud</h2>
           <hr className="bg-[#FF6B35] h-[1px] w-[88%] mx-auto border-0" />
           <div className="flex items-center gap-3 w-[88%] mx-auto mt-4 ">
             <img src="/fluent-mdl2_work.png" alt="icon of developer" />
-            <p className="text-lg mt-1">Senior Fullstack Developer</p>
+            <p className=" text-base md:text-lg mt-1">Senior Fullstack Developer</p>
           </div>
           <div className="flex items-center gap-3 w-[88%] mx-auto mt-4 ">
             <img src="/phone.svg" alt="icon of phone" />
-            <p className="text-lg mt-1">+201000001100</p>
+            <p className="text-base md:text-lg mt-1">+201000001100</p>
           </div>
           <div className="flex items-center gap-3 w-[88%] mx-auto mt-4 ">
             <img src="/email.svg" alt="icon of email" />
-            <p className="text-lg mt-1">MustafaMahmoud@gmail.com</p>
+            <p className="text-base md:text-lg mt-1">MustafaMahmoud@gmail.com</p>
           </div>
 
           <div className="flex items-center gap-3 w-[88%] mx-auto mt-4 mb-7 ">
             <img src="/mynaui_location.png" alt="icon of developer" />
-            <p className="text-lg mt-1">Egypt, Cairo</p>
+            <p className="text-base md:text-lg mt-1">Egypt, Cairo</p>
           </div>
           <div className=" text-end mr-4 my-8">
             <button className="border border-main rounded-2xl px-8 py-2">Edit</button>

@@ -13,7 +13,6 @@ export default function ChooseRole() {
       <h2 className="text-2xl font-semibold text-textColor mb-11">Choose Your Role</h2>
 
       <div className="flex flex-col lg:flex-row items-center justify-center gap-8 space-x-0 lg:space-x-6">
-        
         <Link to="/signup/JobSeeker">
           <div className="bg-grayColor p-5 rounded-3xl cursor-pointer shadow-md w-80 text-center">
             <div className="flex items-center justify-center mb-4">
@@ -33,8 +32,7 @@ export default function ChooseRole() {
           </div>
         </Link>
 
-      
-        <Link to="/signup/Company">
+        <Link to="/signup/company">
           <div className="bg-grayColor p-5 rounded-3xl cursor-pointer shadow-md w-80 text-center">
             <div className="flex items-center justify-center mb-4">
               <img src="/Manager.png" alt="Employer" className="w-16 h-16 object-cover" />

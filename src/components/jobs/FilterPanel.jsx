@@ -8,13 +8,12 @@ const FilterPanel = () => {
     const newValue = e.target.value;
     setValue(newValue);
 
-    // Dynamically update the background
     const range = e.target;
     const percent = ((newValue - range.min) / (range.max - range.min)) * 100;
     range.style.background = `linear-gradient(to right, #013E5D 0%, #013E5D ${percent}%, #FFFFFF ${percent}%, #FFFFFF 100%)`;
   };
   return (
-    <div className="w-1/4 px-4">
+    <div>
       <h2 className="text-xl font-semibold mb-4">Filter By</h2>
       <div className="bg-[#B3C5CE] p-5 rounded-2xl">
         <div className="mb-4">

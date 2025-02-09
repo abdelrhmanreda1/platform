@@ -3,6 +3,13 @@ import PropTypes from "prop-types";
 import { InputField } from "../../ui/InputField";
 import { ActionButton } from "../../ui/ActionButton";
 import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useAuth } from "../../context/AuthContext";
+import { login, requestPasswordReset, resendConfirm } from "../../services/apiAuth";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useMutation } from "@tanstack/react-query";
 
 const FormSection = ({ title, subtitle, children }) => (
   <div className="flex flex-col justify-center items-center">
@@ -23,71 +30,89 @@ FormSection.defaultProps = {
   subtitle: "",
 };
 
+const loginSchema = Yup.object({
+  username: Yup.string().required("Username is required"),
+  password: Yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
+});
+
+const forgetPasswordSchema = Yup.object({
+  email: Yup.string().email("Invalid email address").required("Email is required"),
+});
+
 function LoginStatement() {
   const [step, setStep] = useState("login");
-  const [verificationCode, setVerificationCode] = useState(["", "", "", ""]);
   const navigate = useNavigate();
-  const handleForgetPassword = () => setStep("forgetPassword");
-  const handleResetPassword = () => setStep("verifyAccount");
-  const handleVerify = () => setStep("resetPassword");
-  const handlePasswordReset = () => setStep("login");
+  const { login: authLogin } = useAuth();
 
-  const handleVerificationInput = (value, index) => {
-    if (/^\d?$/.test(value)) {
-      const newCode = [...verificationCode];
-      newCode[index] = value;
-      setVerificationCode(newCode);
-      if (value && index < 3) {
-        document.getElementById(`code-input-${index + 1}`).focus();
-      }
-    }
-  };
+  const loginMutation = useMutation(login, {
+    onSuccess: (data) => {
+      authLogin(data.user);
+      localStorage.setItem("token", data.token);
+      toast.success("Login successful!");
+      navigate("/dashboard");
+    },
+    onError: () => toast.error("Username or password is not correct."),
+  });
+
+  const forgetPasswordMutation = useMutation(requestPasswordReset, {
+    onSuccess: () => {
+      setStep("confirmationMessage");
+      toast.success("Reset link sent to your email!");
+    },
+    onError: () => toast.error("Failed to send reset instructions. Please try again."),
+  });
+
+  const resendConfirmMutation = useMutation(resendConfirm, {
+    onSuccess: () => {
+      toast.success("If this email exists, you will get password reset email in your inbox.");
+    },
+    onError: () => toast.error("Failed to resend email. Please try again."),
+  });
+
+  const loginFormik = useFormik({
+    initialValues: { username: "", password: "" },
+    validationSchema: loginSchema,
+    onSubmit: (values) => loginMutation.mutate(values),
+  });
+
+  const forgetPasswordFormik = useFormik({
+    initialValues: { email: "" },
+    validationSchema: forgetPasswordSchema,
+    onSubmit: (values) => forgetPasswordMutation.mutate(values),
+  });
 
   return (
-    <div className="w-[90%] md:w-[50%] mx-auto">
+    <div className="w-[90%] md:w-[50%] gap-2 mx-auto">
       {step === "login" && (
-        <FormSection title="Welcome Back!" subtitle="">
-          <form className="w-full max-w-sm">
-            <InputField type="email" placeholder="Email Address" />
-            <InputField type="password" placeholder="Password" />
-            <div className="flex items-start justify-end mb-6">
-              <button type="button" onClick={handleForgetPassword} className="text-sm text-[#1C1A1A] hover:text-hoverButton transition duration-300">
+        <FormSection title="Welcome Back!">
+          <form onSubmit={loginFormik.handleSubmit} className="w-full max-w-sm flex flex-col gap-3">
+            <InputField formik={loginFormik} name="username" type="text" placeholder="Username" />
+            <InputField formik={loginFormik} name="password" type="password" placeholder="Password" />
+            <div className="flex items-start justify-end">
+              <button type="button" onClick={() => setStep("forgetPassword")} className="text-sm text-[#1C1A1A] hover:text-hoverButton transition duration-300">
                 Forgot password?
               </button>
             </div>
-            <ActionButton
-              onClick={() => {
-                navigate("/dashboard");
-              }}
-              text="Login"
-            />
+            <ActionButton type="submit" text={loginMutation.isLoading ? "Loading..." : "Login"} />
           </form>
         </FormSection>
       )}
 
       {step === "forgetPassword" && (
-        <FormSection title="Forget Password?" subtitle="Don’t worry, we will send you reset instructions.">
-          <InputField type="email" placeholder="Enter Your Email" />
-          <ActionButton onClick={handleResetPassword} text="Reset Password" />
+        <FormSection title="Forgot Password?" subtitle="Enter your email to receive a reset link">
+          <form onSubmit={forgetPasswordFormik.handleSubmit} className="w-full max-w-sm flex flex-col gap-3">
+            <InputField formik={forgetPasswordFormik} name="email" type="email" placeholder="Enter Your Email" />
+            <ActionButton type="submit" text={forgetPasswordMutation.isLoading ? "Sending..." : " Reset Password"} />
+          </form>
         </FormSection>
       )}
 
-      {step === "verifyAccount" && (
-        <FormSection title="Verify Account" subtitle="Enter the 4-digit code we sent to your email.">
-          <div className="flex space-x-2 mb-4">
-            {verificationCode.map((digit, index) => (
-              <input key={index} id={`code-input-${index}`} type="text" maxLength="1" value={digit} onChange={(e) => handleVerificationInput(e.target.value, index)} className="w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-md focus:outline-none focus:border-main" />
-            ))}
-          </div>
-          <ActionButton onClick={handleVerify} text="Verify Now" />
-        </FormSection>
-      )}
-
-      {step === "resetPassword" && (
-        <FormSection title="Reset Your Password" subtitle="">
-          <InputField type="password" placeholder="New Password" />
-          <InputField type="password" placeholder="Confirm Password" />
-          <ActionButton onClick={handlePasswordReset} text="Reset Password" />
+      {step === "confirmationMessage" && (
+        <FormSection title="Verify Account">
+          <span className="text-slate-500">Please check your email inbox and click on the provided link to reset your password. if you don't recieve email, </span>
+          <button onClick={() => resendConfirmMutation.mutate({ email: forgetPasswordFormik.values.email })} className="text-blue-600 hover:text-blue-800 text-sm mt-2">
+            click here to resend
+          </button>
         </FormSection>
       )}
     </div>

@@ -51,7 +51,7 @@ const PostItem = () => {
         <img src="heart.png" alt="heart icon " />
         <span className="text-[#8D8A8A]">258 . 56 comments</span>
       </div>
-      <div className="flex justify-between mt-4 text-sm text-gray-500 w-[60%] mx-auto my-3">
+      <div className="flex justify-between mt-4 text-sm text-gray-500 w-[97%] md:w-[60%] mx-auto my-3">
         <button className="flex items-center gap-1 font-medium text-[#8D8A8A] text-[17px]">
           <img src="/thumbs-up.png" alt="thumbs-up" /> Like
         </button>

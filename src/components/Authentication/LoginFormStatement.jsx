@@ -39,7 +39,7 @@ const forgetPasswordSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Email is required"),
 });
 
-function LoginStatement() {
+function LoginFormStatement() {
   const [step, setStep] = useState("login");
   const navigate = useNavigate();
   const { login: authLogin } = useAuth();
@@ -57,7 +57,7 @@ function LoginStatement() {
   const forgetPasswordMutation = useMutation(requestPasswordReset, {
     onSuccess: () => {
       setStep("confirmationMessage");
-      toast.success("Reset link sent to your email!");
+      toast.success("If this email exists, you will get password reset email in your inbox.");
     },
     onError: () => toast.error("Failed to send reset instructions. Please try again."),
   });
@@ -119,4 +119,4 @@ function LoginStatement() {
   );
 }
 
-export default LoginStatement;
+export default LoginFormStatement;

@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "/Rectangle-right.png";
-import LoginStatement from "../components/Authentication/loginStatement";
+
 import MoveBack from "../ui/MoveBack";
+import LoginFormStatement from "../components/Authentication/LoginFormStatement";
 
 function Login() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ function Login() {
     <div className="flex min-h-screen bg-white">
       <MoveBack />
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center">
-        <LoginStatement />
+        <LoginFormStatement />
       </div>
       <div
         className="w-full hidden md:flex md:w-3/4 text-white flex-col justify-center items-center"

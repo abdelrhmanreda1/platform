@@ -72,7 +72,7 @@ function RegisterForm() {
             +2
           </option>
         </select>
-        <InputField name="phone" formik={formik} placeholder="Phone Number" type="number" />
+        <InputField name="phone" formik={formik} placeholder="Phone Number" type="text" />
       </div>
 
       <InputField name="username" formik={formik} placeholder="Username" />

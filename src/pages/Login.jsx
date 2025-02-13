@@ -10,11 +10,11 @@ function Login() {
   return (
     <div className="flex min-h-screen bg-white">
       <MoveBack />
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center">
+      <div className="w-full  md:w-[45%] flex flex-col justify-center items-center">
         <LoginFormStatement />
       </div>
       <div
-        className="w-full hidden md:flex md:w-3/4 text-white flex-col justify-center items-center"
+        className="w-full hidden md:flex md:w-[60%] text-white flex-col justify-center items-center"
         style={{
           backgroundImage: `url(${backgroundImage})`,
           backgroundSize: "cover",

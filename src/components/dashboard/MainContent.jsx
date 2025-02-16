@@ -1,15 +1,14 @@
-// import PostBox from "./PostBox";
-import PostItem from "./PostItem";
+import PostItemUser from "./PostItemUser";
 
 const MainContent = () => {
   return (
     <div>
-      <PostItem />
-      <PostItem />
-      <PostItem />
-      <PostItem />
-      <PostItem />
-      <PostItem />
+      <PostItemUser />
+      <PostItemUser />
+      <PostItemUser />
+      <PostItemUser />
+      <PostItemUser />
+      <PostItemUser />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-const ProfileCard = () => {
+const ProfileCompanyCard = () => {
   return (
     <>
       <div
@@ -9,7 +9,7 @@ const ProfileCard = () => {
       >
         <div className="relative h-32 bg-cover bg-center" style={{ backgroundImage: "url('/bg.png')" }}>
           <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2">
-            <img src="/imgprofile.svg" alt="Profile" className="w-[200px] rounded-full" />
+            <img src="/dellprofile.svg" alt="Profile" className="w-[200px] rounded-full" />
           </div>
         </div>
 
@@ -66,4 +66,4 @@ const ProfileCard = () => {
   );
 };
 
-export default ProfileCard;
+export default ProfileCompanyCard;

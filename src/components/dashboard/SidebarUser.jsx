@@ -1,4 +1,4 @@
-const Sidebar = () => {
+const SidebarUser = () => {
   return (
     <>
       <div
@@ -51,4 +51,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default SidebarUser;

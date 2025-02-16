@@ -1,4 +1,4 @@
-const PostBox = () => {
+const PostUserBox = () => {
   return (
     <div className="bg-white shadow-lg mb-8 p-4 rounded-lg">
       <div className="flex items-center gap-4">
@@ -25,4 +25,4 @@ const PostBox = () => {
   );
 };
 
-export default PostBox;
+export default PostUserBox;

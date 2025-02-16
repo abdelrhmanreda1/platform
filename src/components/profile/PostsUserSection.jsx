@@ -1,4 +1,4 @@
-const PostsSection = () => {
+const PostsUserSection = () => {
   return (
     <div
       style={{
@@ -41,4 +41,4 @@ const PostsSection = () => {
   );
 };
 
-export default PostsSection;
+export default PostsUserSection;

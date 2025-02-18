@@ -1,11 +1,15 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+// import { useNavigate, useParams } from "react-router-dom";
 import JobDetailsCardsGroup from "../components/jobDetails/JobDetailsCardsGroup";
 import JobHeader from "../components/jobDetails/JobHeader";
 import JobSection from "../components/jobDetails/JobSection";
+import ApllyJobModel from "../components/dashboard/ApllyJobModel";
 
 const JobDetailsPage = () => {
-  const navigate = useNavigate();
-  const { jobId } = useParams();
+  // const navigate = useNavigate();
+  // const { jobId } = useParams();
+  const [showModal, setShowModal] = useState(false);
+
   const overviewText = "We are looking for an experienced Senior Frontend Developer to join our team. You will lead the development of user interfaces, ensure high-quality and scalable applications, and collaborate with designers and backend developers to create seamless user experiences.";
 
   const responsibilities = ["Develop and maintain responsive, high-performance web interfaces.", "Collaborate with designers and backend developers to deliver cohesive solutions.", "Optimize applications for speed and scalability.", "Conduct testing and debugging to ensure quality and functionality.", "Mentor junior developers and participate in code reviews."];
@@ -20,10 +24,12 @@ const JobDetailsPage = () => {
         <JobSection title="Overview" content={overviewText} />
         <JobSection title="Responsibilities" content={responsibilities} isList />
         <JobSection title="Required Skills" content={skills} isList />
-        <button onClick={() => navigate(`/dashboard/jobs/${jobId}/apply`)} className="bg-main text-white px-6 py-3  my-6 rounded-2xl">
+        <button className="bg-main text-white px-6 py-3  my-6 rounded-2xl" onClick={() => setShowModal(true)}>
           Apply For This Job
         </button>
       </div>
+
+      {showModal && <ApllyJobModel setShowModal={setShowModal} />}
     </div>
   );
 };

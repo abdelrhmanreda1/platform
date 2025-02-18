@@ -1,14 +1,11 @@
 import PostItemUser from "./PostItemUser";
 
-const MainContent = () => {
+const MainContent = ({ posts }) => {
   return (
     <div>
-      <PostItemUser />
-      <PostItemUser />
-      <PostItemUser />
-      <PostItemUser />
-      <PostItemUser />
-      <PostItemUser />
+      {posts.map((post, index) => (
+        <PostItemUser key={index} post={post} />
+      ))}
     </div>
   );
 };

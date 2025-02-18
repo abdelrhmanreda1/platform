@@ -16,7 +16,7 @@ function ProfileUserCard() {
       twitter: "https://twitter.com/yourprofile",
       website: "https://website-name.com",
     },
-    resume: null, // or a string if you’re storing a URL
+    resume: null,
     experiences: [
       { title: "Senior Fullstack Developer", company: "Xceed" },
       { title: "Senior Fullstack Developer", company: "Oracle" },
@@ -78,7 +78,6 @@ function ProfileUserCard() {
         </div>
       </div>
 
-      {/* On the web */}
       <div style={{ boxShadow: "0 12px 20px rgba(1, 62, 93, 0.4)" }} className="p-8 bg-white max-w-sm mx-auto mt-6 overflow-hidden">
         <div className="flex justify-between items-center mb-9 ">
           <h2 className="text-xl font-semibold text-gray-800 ">On the web</h2>
@@ -111,7 +110,6 @@ function ProfileUserCard() {
           ))}
         </ul>
       </div>
-      {/* Edit Modal */}
       {isEditing && <EditProfileUser userData={userData} setUserData={setUserData} setIsEditing={setIsEditing} />}
     </>
   );

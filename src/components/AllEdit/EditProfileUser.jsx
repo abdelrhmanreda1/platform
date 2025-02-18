@@ -218,7 +218,6 @@ function EditProfileUser({ userData, setUserData, setIsEditing }) {
 
         <hr className="bg-[#FF6B35] h-[1px] mb-6 border-0" />
 
-        {/* EXPERIENCES */}
         <h3 className="text-xl text-center font-bold mb-3">Experiences</h3>
         {formData.experiences.map((exp, index) => (
           <div key={index} className="mb-4 border p-3 rounded-lg">

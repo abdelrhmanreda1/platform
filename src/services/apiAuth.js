@@ -27,11 +27,18 @@ export const registerCompany = async (values) => {
 };
 
 export const login = async (values) => {
-  const response = await axios.post(`${api_key}/auth/login`, values, {
-    headers: { "Content-Type": "application/json" },
-    withCredentials: true,
-  });
-  return response.data;
+  try {
+    console.log("Sending login payload:", values); // نتأكد من الـ values
+    const response = await axios.post(`${api_key}/auth/login`, values, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true, // لو الـ API بيعتمد على cookies
+    });
+    console.log("Login response:", response.data); // نشوف الـ response
+    return response.data;
+  } catch (error) {
+    console.error("Login API error:", error.response?.data || error.message);
+    throw error;
+  }
 };
 
 export const resendConfirm = async (values) => {

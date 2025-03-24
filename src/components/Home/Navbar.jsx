@@ -69,7 +69,7 @@ function Navbar() {
     <nav className="py-3 border-b-2 border-[#B3C5CE] fixed top-0 left-0 w-full bg-white z-30">
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link to="/" className="flex items-center space-x-8">
-          <div className="text-2xl md:text-3xl font-bold text-main">LOGO</div>
+          <div className="text-2xl md:text-3xl font-bold text-main font-[Pacifico]">HIRO</div>
         </Link>
 
         <div className="hidden text-lg md:flex md:space-x-6 justify-center flex-grow text-center">

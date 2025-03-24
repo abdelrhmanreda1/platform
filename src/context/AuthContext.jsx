@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { login } from "../services/apiAuth";
+import { useQueryClient } from "@tanstack/react-query";
 
 const AuthContext = createContext();
 
@@ -18,46 +18,54 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => getStoredData("user"));
   const [role, setRole] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(!!user);
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     if (token) {
       try {
         const decoded = jwtDecode(token);
         setRole(decoded.role);
       } catch (error) {
         console.error("Invalid token:", error);
-        localStorage.removeItem("token");
+        logout();
       }
+    } else {
+      setRole(null);
     }
-  }, []);
+  }, [token]);
 
-  const loginUser = async (values) => {
+  const loginUser = (data) => {
+    // نغير من async لـ function عادي وناخد data
     try {
-      const response = await login(values);
-      const { user, token } = response;
-
+      const { user, token } = data; // نستخدم الـ data اللي جاية من loginMutation
       const decoded = jwtDecode(token);
       setUser(user);
       setRole(decoded.role);
+      setToken(token);
       setIsAuthenticated(true);
 
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
+
+      queryClient.invalidateQueries(["profile"]);
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Login error details:", error);
+      throw error;
     }
   };
 
   const logout = () => {
     setUser(null);
     setRole(null);
+    setToken(null);
     setIsAuthenticated(false);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    queryClient.invalidateQueries(["profile"]);
   };
 
-  return <AuthContext.Provider value={{ user, role, isAuthenticated, login: loginUser, logout }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user, role, isAuthenticated, login: loginUser, logout, token }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => useContext(AuthContext);

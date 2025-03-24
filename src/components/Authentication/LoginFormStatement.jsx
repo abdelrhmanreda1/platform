@@ -31,12 +31,12 @@ FormSection.defaultProps = {
 };
 
 const loginSchema = Yup.object({
-  username: Yup.string().required("Username is required"),
+  username: Yup.string().required("Username is required"), // نغير email لـ username
   password: Yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
 });
 
 const forgetPasswordSchema = Yup.object({
-  email: Yup.string().email("Invalid email address").required("Email is required"),
+  email: Yup.string().email("Invalid email address").required("Email is required"), // دي هتفضل email لأنها لـ forget password
 });
 
 function LoginFormStatement() {
@@ -44,33 +44,38 @@ function LoginFormStatement() {
   const navigate = useNavigate();
   const { login: authLogin } = useAuth();
 
-  const loginMutation = useMutation(login, {
+  const loginMutation = useMutation({
+    mutationFn: login,
     onSuccess: (data) => {
-      authLogin(data.user);
+      authLogin(data);
       localStorage.setItem("token", data.token);
       toast.success("Login successful!");
       navigate("/dashboard");
     },
-    onError: () => toast.error("Username or password is not correct."),
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "Username or password is not correct.");
+    },
   });
 
-  const forgetPasswordMutation = useMutation(requestPasswordReset, {
+  const forgetPasswordMutation = useMutation({
+    mutationFn: requestPasswordReset,
     onSuccess: () => {
       setStep("confirmationMessage");
       toast.success("If this email exists, you will get password reset email in your inbox.");
     },
-    onError: () => toast.error("Failed to send reset instructions. Please try again."),
+    onError: () => toast.error("Failed to send reset instructions. Please try again"),
   });
 
-  const resendConfirmMutation = useMutation(resendConfirm, {
+  const resendConfirmMutation = useMutation({
+    mutationFn: resendConfirm,
     onSuccess: () => {
       toast.success("If this email exists, you will get password reset email in your inbox.");
     },
-    onError: () => toast.error("Failed to resend email. Please try again."),
+    onError: () => toast.error("Failed to resend email. Please try again"),
   });
 
   const loginFormik = useFormik({
-    initialValues: { username: "", password: "" },
+    initialValues: { username: "", password: "" }, // نغير email لـ username
     validationSchema: loginSchema,
     onSubmit: (values) => loginMutation.mutate(values),
   });
@@ -86,7 +91,7 @@ function LoginFormStatement() {
       {step === "login" && (
         <FormSection title="Welcome Back!">
           <form onSubmit={loginFormik.handleSubmit} className="w-full max-w-sm flex flex-col gap-3">
-            <InputField formik={loginFormik} name="username" type="text" placeholder="Username" />
+            <InputField formik={loginFormik} name="username" type="text" placeholder="Username" /> {/* نغير email لـ username */}
             <InputField formik={loginFormik} name="password" type="password" placeholder="Password" />
             <div className="flex items-start justify-end">
               <button type="button" onClick={() => setStep("forgetPassword")} className="text-sm text-[#1C1A1A] hover:text-hoverButton transition duration-300">
@@ -102,14 +107,14 @@ function LoginFormStatement() {
         <FormSection title="Forgot Password?" subtitle="Enter your email to receive a reset link">
           <form onSubmit={forgetPasswordFormik.handleSubmit} className="w-full max-w-sm flex flex-col gap-3">
             <InputField formik={forgetPasswordFormik} name="email" type="email" placeholder="Enter Your Email" />
-            <ActionButton type="submit" text={forgetPasswordMutation.isLoading ? "Sending..." : " Reset Password"} />
+            <ActionButton type="submit" text={forgetPasswordMutation.isLoading ? "Sending..." : "Reset Password"} />
           </form>
         </FormSection>
       )}
 
       {step === "confirmationMessage" && (
         <FormSection title="Verify Account">
-          <span className="text-slate-500">Please check your email inbox and click on the provided link to reset your password. if you don't recieve email, </span>
+          <span className="text-slate-500">Please check your email inbox and click on the provided link to reset your password. If you don’t receive an email,</span>
           <button onClick={() => resendConfirmMutation.mutate({ email: forgetPasswordFormik.values.email })} className="text-blue-600 hover:text-blue-800 text-sm mt-2">
             click here to resend
           </button>

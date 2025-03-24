@@ -19,6 +19,9 @@ import { ToastContainer } from "react-toastify";
 import ProtectedRoute from "./ui/ProtectedRoute";
 
 import PasswordReset from "./pages/PasswordReset";
+import { AuthProvider } from "./context/AuthContext";
+import Community from "./pages/Community";
+import Applications from "./pages/Applications";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +48,9 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <ProfileHome /> },
       { path: "jobs", element: <Jobs /> },
+      { path: "community", element: <Community /> },
+      { path: "applications", element: <Applications /> },
+
       { path: "jobs/:jobId", element: <JobDetailsPage /> },
       {
         path: "jobs/post",
@@ -66,8 +72,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* <ReactQueryDevtools /> */}
-      <ToastContainer />
-      <RouterProvider router={router} />;
+      <AuthProvider>
+        <ToastContainer />
+        <RouterProvider router={router} />;
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

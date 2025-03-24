@@ -1,42 +1,99 @@
 import { useState } from "react";
 import { FiCamera } from "react-icons/fi";
+import { toast } from "react-toastify";
+import { useUpdateProfile, useUploadProfilePicture } from "../../services/apiProfile";
+import MinSpinner from "../../ui/MinSpinnner";
+
 function EditProfileCompany({ companyData, setCompanyData, setIsEditing }) {
-  const [formData, setFormData] = useState(companyData);
+  const [formData, setFormData] = useState({
+    ...companyData,
+    profilePicture: companyData.profilePicture?.secure_url || companyData.profilePicture || "",
+    website: companyData.website || "",
+  });
+
+  const { mutate: updateProfile, isLoading: isUpdating } = useUpdateProfile();
+  const { mutate: uploadProfilePicture, isLoading: isUploadingPicture } = useUploadProfilePicture();
+
+  const getChangedData = (oldData, newData) => {
+    const changedData = {};
+
+    Object.keys(newData).forEach((key) => {
+      if (key === "profilePicture") return;
+
+      if (Array.isArray(newData[key])) {
+        if (JSON.stringify(newData[key]) !== JSON.stringify(oldData[key])) {
+          changedData[key] = newData[key];
+        }
+      } else if (newData[key] !== oldData[key]) {
+        changedData[key] = newData[key];
+      }
+    });
+
+    return changedData;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    if (["github", "twitter", "website"].includes(name)) {
-      setFormData({
-        ...formData,
-        links: {
-          ...formData.links,
-          [name]: value,
-        },
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
+
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData((prev) => ({
-        ...prev,
-        profilePhoto: reader.result,
-      }));
-    };
-    reader.readAsDataURL(file);
+    // اعمل preview للصورة قبل الرفع
+    const previewUrl = URL.createObjectURL(file);
+    setFormData((prev) => ({
+      ...prev,
+      profilePicture: previewUrl,
+    }));
+
+    uploadProfilePicture(file, {
+      onSuccess: (newProfilePicture) => {
+        const pictureUrl = typeof newProfilePicture === "string" ? newProfilePicture : newProfilePicture?.secure_url || newProfilePicture?.url || previewUrl;
+        setFormData((prev) => ({
+          ...prev,
+          profilePicture: pictureUrl,
+        }));
+        toast.success("Profile picture updated successfully!");
+      },
+      onError: (error) => {
+        console.error("Error uploading profile picture:", error);
+        toast.error(error.message || "Failed to upload profile picture!");
+        // ارجع للصورة الأصلية لو حصل خطأ
+        setFormData((prev) => ({
+          ...prev,
+          profilePicture: companyData.profilePicture?.secure_url || companyData.profilePicture || "",
+        }));
+      },
+    });
   };
+
   const handleSave = () => {
-    setCompanyData(formData);
-    setIsEditing(false);
+    const changedData = getChangedData(companyData, formData);
+    console.log("Changed data sent to PUT /profile:", changedData);
+
+    if (Object.keys(changedData).length > 0) {
+      updateProfile(changedData, {
+        onSuccess: () => {
+          setCompanyData({ ...companyData, ...changedData }); // تحديث البيانات الأصلية
+          toast.success("Profile updated successfully!");
+          setIsEditing(false);
+        },
+        onError: (err) => {
+          console.error("Failed to update profile:", err);
+          const errorMessage = err.response?.data?.message || "An error occurred while updating the profile!";
+          toast.error(errorMessage);
+        },
+      });
+    } else {
+      setCompanyData(formData);
+      setIsEditing(false);
+      toast.success("No changes to save!");
+    }
   };
 
   return (
@@ -51,25 +108,24 @@ function EditProfileCompany({ companyData, setCompanyData, setIsEditing }) {
       >
         <img src="/close.png" onClick={() => setIsEditing(false)} className="absolute w-6 h-6 top-3 right-2 cursor-pointer" />
 
-        <h2 className="text-xl  font-semibold text-gray-800 mt-[-10px]  mb-2 text-center">Edit Profile</h2>
-        <hr className="bg-gray-200 h-[1px] w-full  mb-6 border-0" />
+        <h2 className="text-xl font-semibold text-gray-800 mt-[-10px] mb-2 text-center">Edit Profile</h2>
+        <hr className="bg-gray-200 h-[1px] w-full mb-6 border-0" />
         <div className="flex justify-center mt-2 relative">
-          <img src={formData.profilePhoto} alt="Profile" className="w-20 h-20 object-cover rounded-full" />
+          <img src={formData.profilePicture || "/default-profile.png"} alt="Profile" className="w-20 shadow-sm h-20 object-cover rounded-full" />
           <label
             htmlFor="profilePhoto"
             className="absolute bottom-0 left-[52%] cursor-pointer
                       bg-white p-1 rounded-full border border-gray-300"
             title="Change photo"
           >
-            <FiCamera className="text-gray-600 w-3 h-3" />
+            {isUploadingPicture ? <MinSpinner /> : <FiCamera className="text-gray-600 w-3 h-3" />}
           </label>
-          {/* input مخفي لاختيار الملف */}
-          <input id="profilePhoto" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+          <input id="profilePhoto" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} disabled={isUploadingPicture} />
         </div>
-        <h3 className="text-xl text-center font-semibold text-gray-800 mt-3 mb-3">Basic information </h3>
+        <h3 className="text-xl text-center font-semibold text-gray-800 mt-3 mb-3">Basic Information</h3>
         <div className="mb-4">
           <label className="block text-gray-700 mb-1">Company Name</label>
-          <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full px-3 py-2 border rounded-lg" />
+          <input type="text" name="companyName" value={formData.companyName} onChange={handleChange} className="w-full px-3 py-2 border rounded-lg" />
         </div>
 
         <div className="mb-4">
@@ -84,48 +140,44 @@ function EditProfileCompany({ companyData, setCompanyData, setIsEditing }) {
 
         <div className="mb-6">
           <label className="block text-gray-700 mb-1">Location</label>
-          <input type="text" name="location" value={formData.location} onChange={handleChange} className="w-full px-3 py-2 border rounded-lg" />
+          <input type="text" name="address" value={formData.address} onChange={handleChange} className="w-full px-3 py-2 border rounded-lg" />
         </div>
 
         <hr className="bg-[#FF6B35] h-[1px] mb-6 border-0" />
 
-        <h3 className="text-xl text-center font-semibold text-gray-800 mb-3">About company</h3>
+        <h3 className="text-xl text-center font-semibold text-gray-800 mb-3">About Company</h3>
 
         <div className="mb-6">
-          <textarea name="description" value={formData.description} onChange={handleChange} className="w-full scrollbar-hide px-3 py-2 border rounded-lg" rows={3}></textarea>
+          <textarea name="aboutCompany" value={formData.aboutCompany} onChange={handleChange} className="w-full scrollbar-hide px-3 py-2 border rounded-lg" rows={3}></textarea>
         </div>
 
         <hr className="bg-[#FF6B35] h-[1px] mb-6 border-0" />
 
-        <h3 className="text-xl text-center font-semibold text-gray-800 mb-3">On the web</h3>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-1">GitHub Link</label>
-          <input type="text" name="github" value={formData.links.github} onChange={handleChange} className="w-full px-3 py-2 border rounded-lg" />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-1">Twitter Link</label>
-          <input type="text" name="twitter" value={formData.links.twitter} onChange={handleChange} className="w-full px-3 py-2 border rounded-lg" />
-        </div>
-
+        <h3 className="text-xl text-center font-semibold text-gray-800 mb-3">On the Web</h3>
         <div className="mb-6">
           <label className="block text-gray-700 mb-1">Website Link</label>
-          <input type="text" name="website" value={formData.links.website} onChange={handleChange} className="w-full px-3 py-2 border rounded-lg" />
+          <input type="text" name="website" value={formData.website} onChange={handleChange} className="w-full px-3 py-2 border rounded-lg" />
         </div>
 
         <hr className="bg-[#FF6B35] h-[1px] mb-6 border-0" />
 
-        <h3 className="text-xl text-center font-semibold text-gray-800 mb-3">Company size</h3>
+        <h3 className="text-xl text-center font-semibold text-gray-800 mb-3">Company Size</h3>
 
         <div className="mb-6">
           <label className="block text-gray-700 mb-1">Employees</label>
-          <input type="text" name="employees" value={formData.employees} onChange={handleChange} className="w-full px-3 py-2 border rounded-lg" />
+          <select name="employeesCount" value={formData.employeesCount || ""} onChange={handleChange} className="w-full px-3 py-2 border rounded-lg">
+            <option value="">Select company size</option>
+            <option value="1-10">1-10</option>
+            <option value="11-20">11-20</option>
+            <option value="21-50">21-50</option>
+            <option value="51-100">51-100</option>
+            <option value="100+">100+</option>
+          </select>
         </div>
 
         <div className="w-full">
-          <button className="bg-main w-full text-white px-4 py-2 rounded-lg" onClick={handleSave}>
-            Save
+          <button disabled={isUpdating || isUploadingPicture} className="bg-main w-full text-white px-4 py-2 rounded-lg" onClick={handleSave}>
+            {isUpdating ? "Updating..." : "Save"}
           </button>
         </div>
       </div>

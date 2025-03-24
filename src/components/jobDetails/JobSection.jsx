@@ -1,8 +1,8 @@
 const JobSection = ({ title, content, isList }) => {
   return (
-    <div className="mt-6 bg-white rounded-lg p-6  border border-[#1C1A1A] ">
+    <div className="mt-6 bg-white rounded-lg p-6  border border-[#1C1A1A]  ">
       <div className="flex items-center gap-3 mb-5 ml-[-5px]">
-        <p className="bg-main text-white w-8 h-8 flex justify-center items-center text-center rounded-full text-xl ">3</p>
+        {/* <p className="bg-main text-white w-8 h-8 flex justify-center items-center text-center rounded-full text-xl ">1</p> */}
         <h3 className="text-xl font-semibold ">{title}</h3>
       </div>
       {isList ? (
@@ -14,7 +14,6 @@ const JobSection = ({ title, content, isList }) => {
       ) : (
         <p className="text-gray-600">{content}</p>
       )}
-     
     </div>
   );
 };
